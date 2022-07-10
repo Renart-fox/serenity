@@ -39,6 +39,8 @@ use crate::model::permissions::Permissions;
 #[cfg(all(feature = "cache", feature = "http", feature = "model"))]
 use crate::model::{guild::Role, id::RoleId};
 
+use deunicode::deunicode;
+
 /// An enum representing all possible fail conditions under which a command won't
 /// be executed.
 #[derive(Debug)]
@@ -624,7 +626,14 @@ impl Framework for StandardFramework {
             return;
         }
 
-        let mut stream = Stream::new(&msg.content);
+        let mut stream;
+        let deunicoded_string = deunicode(&msg.content.as_str());
+
+        if self.config.sanitized_cmd_name {
+            stream = Stream::new(&deunicoded_string);
+        } else {
+            stream = Stream::new(&msg.content);
+        }
 
         stream.take_while_char(char::is_whitespace);
 

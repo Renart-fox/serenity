@@ -10,6 +10,7 @@
 // be lazy, import all macros globally!
 #[macro_use]
 extern crate tracing;
+extern crate deunicode;
 
 use std::collections::HashMap;
 use std::env;

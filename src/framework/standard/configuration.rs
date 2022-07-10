@@ -134,6 +134,8 @@ pub struct Configuration {
     pub delimiters: Vec<Delimiter>,
     #[doc(hidden)]
     pub case_insensitive: bool,
+    #[doc(hidden)]
+    pub sanitized_cmd_name: bool,
 }
 
 impl Configuration {
@@ -564,6 +566,15 @@ impl Configuration {
 
         self
     }
+
+    /// Whether the framework should try to replace accents and special characters when processing a command
+    /// name before trying to invoke it. For instance, these examples will be treated as "meteo":
+    /// `~météo`, `~météo#?°=`
+    pub fn sanitize_cmd_name(&mut self, scn: bool) -> &mut Self {
+        self.sanitized_cmd_name = scn;
+
+        self
+    }
 }
 
 impl Default for Configuration {
@@ -603,6 +614,7 @@ impl Default for Configuration {
             on_mention: None,
             owners: HashSet::default(),
             prefixes: vec![String::from("~")],
+            sanitized_cmd_name: false,
         }
     }
 }
